@@ -1,1 +1,1 @@
-<?php
+hello world i'm footer!

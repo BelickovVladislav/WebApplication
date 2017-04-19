@@ -20,8 +20,9 @@ class Application
     private function __construct()
     {
         $this->property = array(
-            "id" => "h1"
+            "h1" => "news"
         );
+        ob_start();
     }
 
     public function restartBuffer()
@@ -35,14 +36,20 @@ class Application
         $this->property[$id] = $value;
     }
 
-    public function getPageProperty(srting $id)
+    public function getPageProperty($id)
     {
+        $id = (string)$id;
+
         return $this->property[$id];
     }
 
-    public function showProperty(string $id)
+    public function showProperty($id)
     {
-
+        ob_flush();
+        ob_clean();
+        $id = (string)$id;
+        echo $this->getPageProperty($id);
+        ob_flush();
     }
 
     public function showHeader($template_id)
@@ -54,6 +61,7 @@ class Application
 
     public function showFooter($template_id)
     {
+        ob_flush();
         ob_clean();
         include_once("../app/templates/$template_id/footer.php");
         ob_flush();
