@@ -11,7 +11,7 @@ class Application
     public static function getInstance()
     {
         if (self::$app == null)
-            self::$app = new Application();
+            self::$app = new /*Application*/self();
         return self::$app;
     }
 
