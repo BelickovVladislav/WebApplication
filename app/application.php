@@ -10,7 +10,9 @@ class Application
 
     public static function getInstance()
     {
-        return self::$app == null ? new Application() : self::$app;
+        if (self::$app == null)
+            self::$app = new Application();
+        return self::$app;
     }
 
     private $property;
@@ -45,14 +47,14 @@ class Application
 
     public function showHeader($template_id)
     {
-        ob_start();
+        ob_clean();
         include_once("../app/templates/$template_id/header.php");
         ob_flush();
     }
 
     public function showFooter($template_id)
     {
-        ob_start();
+        ob_clean();
         include_once("../app/templates/$template_id/footer.php");
         ob_flush();
     }
