@@ -4,34 +4,46 @@
  *
  */
 
-class Application
+final class Application
 {
     private static $app = null;
+    private $property;
 
     public static function getInstance()
     {
         if (self::$app == null)
-            self::$app = new /*Application*/self();
+            self::$app = new static();
         return self::$app;
     }
 
-    private $property;
 
     private function __construct()
     {
         $this->property = array(
-            "h1" => "news"
+            "h1" => "news",
+            "title" => "news"
         );
-        ob_start();
+    }
+
+    private function __clone()
+    {
+
+    }
+
+    private function __sleep()
+    {
+    }
+
+    private function __wakeup()
+    {
     }
 
     public function restartBuffer()
     {
-        ob_end_clean();
-        ob_start();
+        ob_clean();
     }
 
-    public function setPageProperty(srting $id, string $value)
+    public function setPageProperty($id, $value)
     {
         $this->property[$id] = $value;
     }
@@ -43,27 +55,39 @@ class Application
         return $this->property[$id];
     }
 
+    private function includeFile($path)
+    {
+        if (is_file($path)) {
+            return (include_once $path);
+        }
+        return false;
+    }
+
+    public function handler($event)
+    {
+//        $this->includeFile('init.php');
+        include_once 'init.php';
+        if ($event == 'onEpilog')
+            call_user_func($event, $this->property);
+        else
+            call_user_func($event);
+    }
+
     public function showProperty($id)
     {
-        ob_flush();
-        ob_clean();
-        $id = (string)$id;
-        echo $this->getPageProperty($id);
-        ob_flush();
+        echo "#PAGE_PROPERTY_$id#";
     }
 
     public function showHeader($template_id)
     {
-        ob_clean();
-        include_once("../app/templates/$template_id/header.php");
-        ob_flush();
+        $this->handler('onProlog');
+        $this->includeFile("../app/templates/$template_id/header.php");
     }
 
     public function showFooter($template_id)
     {
-        ob_flush();
-        ob_clean();
-        include_once("../app/templates/$template_id/footer.php");
-        ob_flush();
+        $this->handler('onEpilog');
+        $this->includeFile("../app/templates/$template_id/footer.php");
+        ob_end_flush();
     }
 }
