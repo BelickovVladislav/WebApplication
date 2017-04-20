@@ -59,21 +59,18 @@ final class Application
     {
         if (is_file($path)) {
             /*return (*/
-            include_once($path)/*)*/
-            ;
+            include_once($path);
         }
         return false;
     }
 
     public function handler($event)
     {
-        $this->includeFile('../app/init.php');
-//        include_once 'init.php';
-        if ($event == 'onEpilog')
-            call_user_func($event, $this->property);
-        else
-            call_user_func($event);
+        $this->includeFile($_SERVER['DOCUMENT_ROOT'] . '/app/init.php');
+        if (call_user_func($event) != null) {
+        }
     }
+
 
     public function showProperty($id)
     {
@@ -83,13 +80,27 @@ final class Application
     public function showHeader($template_id)
     {
         $this->handler('onProlog');
-        $this->includeFile("../app/templates/$template_id/header.php");
+        $this->includeFile($_SERVER['DOCUMENT_ROOT'] . "/app/templates/$template_id/header.php");
+    }
+
+    private function getPropertyKeys()
+    {
+        $keys = array();
+
+        foreach (array_keys($this->property) as $key)
+            $keys[] = "#PAGE_PROPERTY_" . $key . "#";
+        return $keys;
     }
 
     public function showFooter($template_id)
     {
+
         $this->handler('onEpilog');
-        $this->includeFile("../app/templates/$template_id/footer.php");
+        $content = ob_get_contents();
+        $content = str_replace($this->getPropertyKeys(), $this->property, $content);
+        ob_clean();
+        echo $content;
+        $this->includeFile($_SERVER['DOCUMENT_ROOT'] . "/app/templates/$template_id/footer.php");
         ob_end_flush();
     }
 }

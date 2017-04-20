@@ -4,12 +4,8 @@ function onProlog()
     ob_start();
 }
 
-function onEpilog(Array $array)
+function onEpilog()
 {
-    $content = ob_get_contents();
-    foreach (array_keys($array) as $key) {
-        $content = str_replace("#PAGE_PROPERTY_" . $key . "#", $array[$key], $content);
-    }
-    ob_clean();
-    echo $content;
+    Application::getInstance()->setPageProperty('h1', 'NEWS');
+    Application::getInstance()->setPageProperty('title', 'News');
 }
