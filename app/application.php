@@ -37,6 +37,9 @@ final class Application
     private function __wakeup()
     {
     }
+    private function __invoke()
+    {
+    }
 
     public function restartBuffer()
     {
