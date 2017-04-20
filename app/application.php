@@ -58,7 +58,9 @@ final class Application
     private function includeFile($path)
     {
         if (is_file($path)) {
-            /*return (*/include_once ($path)/*)*/;
+            /*return (*/
+            include_once($path)/*)*/
+            ;
         }
         return false;
     }
