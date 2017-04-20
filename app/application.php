@@ -58,15 +58,15 @@ final class Application
     private function includeFile($path)
     {
         if (is_file($path)) {
-            return (include_once $path);
+            /*return (*/include_once ($path)/*)*/;
         }
         return false;
     }
 
     public function handler($event)
     {
-//        $this->includeFile('init.php');
-        include_once 'init.php';
+        $this->includeFile('../app/init.php');
+//        include_once 'init.php';
         if ($event == 'onEpilog')
             call_user_func($event, $this->property);
         else
