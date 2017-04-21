@@ -2,11 +2,11 @@
 /*
  *
  */
-include_once "../app/application.php";
+include_once "../app/core.php";
 
-Application::getInstance()->showHeader("news");
+Application::getInstance()->showHeader();
 echo "<h1>";
 Application::getInstance()->showProperty("h1");
 echo "</h1>";
-Application::getInstance()->showFooter('news');
+Application::getInstance()->showFooter();
 ?>
