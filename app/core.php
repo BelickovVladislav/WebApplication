@@ -60,7 +60,7 @@ final class Application
 
     public function setPageProperty($id, $value)
     {
-        $this->property[$id] = $value;
+        $this->property[$this->getMacros($id)] = $value;
     }
 
     public function getPageProperty($id)
@@ -112,21 +112,13 @@ final class Application
         return "#PAGE_PROPERTY_" . $macros . "#";
     }
 
-    private function getPropertyKeys()
-    {
-        $keys = array();
-
-        foreach (array_keys($this->property) as $key)
-            $keys[] = $this->getMacros($key);
-        return $keys;
-    }
 
     public function showFooter()
     {
         $this->includeFile($this->getTemplatePath() . "/footer.php");
         $this->handler('onEpilog');
         $content = ob_get_contents();
-        $content = str_replace($this->getPropertyKeys(), $this->property, $content);
+        $content = str_replace(array_keys($this->property), $this->property, $content);
         ob_clean();
         echo $content;
         ob_end_flush();
