@@ -49,8 +49,11 @@ final class Application
 
     public function includeComponent()
     {
-        $component = new Component("name", $this->template, array("value1", "value2"));
-
+        include_once($_SERVER['DOCUMENT_ROOT'] . '/app/components/news/class.php');
+        $classes = get_declared_classes();
+        $className = $classes[count($classes)-1];
+        $component = new $className('news', 'template', array('1', '2', '3'));
+        echo '<pre>'.print_r($component,true).'</pre>';
     }
 
     public function restartBuffer()

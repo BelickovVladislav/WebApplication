@@ -3,10 +3,13 @@
  *
  */
 include_once "../app/core.php";
-Application::getInstance()->setTemplate('news');
-Application::getInstance()->showHeader();
+$app = Application::getInstance();
+$app->setTemplate('news');
+$app->showHeader();
 echo "<h1>";
-Application::getInstance()->showProperty("h1");
+$app->showProperty("h1");
 echo "</h1>";
-Application::getInstance()->showFooter();
+$app->showFooter();
+$app->includeComponent();
+//echo '<pre>'.print_r(spl_classes(),true).'</pre>';
 ?>
