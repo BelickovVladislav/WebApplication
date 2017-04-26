@@ -11,6 +11,9 @@
 #button{
     margin: auto;
 }
+.item{
+    width: 600px;
+}
 *{
     text-align: center;
 }

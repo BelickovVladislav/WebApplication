@@ -175,11 +175,12 @@ abstract class Component
     protected function getPageNumber()
     {
         $page = 1;
-        if (isset($_GET['PAGE']) && /*is_int($_GET['PAGE']) &&*/ (int)$_GET['PAGE'] > 0)
+        if (isset($_GET['PAGE']) && /*is_int($_GET['PAGE']) &&*/
+            (int)$_GET['PAGE'] > 0
+        )
             $page = (int)($_GET['PAGE']);
         return $page;
     }
-
 
 
     public final function includeTemplate()
@@ -190,8 +191,10 @@ abstract class Component
         /*
          * Добавить вывод по шаблону
          */
-        echo '<pre>' . print_r($this->params, true) . '</pre>';
-        echo '<pre>' . print_r($this->arrResult, true) . '</pre>';
+
+        showNews($this->arrResult, $this->params);
+//        echo '<pre>' . print_r($this->params, true) . '</pre>';
+//        echo '<pre>' . print_r($this->arrResult, true) . '</pre>';
     }
 
     public abstract function executeComponent();
