@@ -9,6 +9,7 @@ final class Application
     private static $app = null;
     private $property = array();
     private $template = "";
+    private $__components = array();
 
     public static function getInstance()
     {
@@ -47,13 +48,30 @@ final class Application
     {
     }
 
-    public function includeComponent()
+    public function includeComponent($name, $tempalte, $params = array())
     {
-        include_once($_SERVER['DOCUMENT_ROOT'] . '/app/components/news/class.php');
-        $classes = get_declared_classes();
-        $className = $classes[count($classes)-1];
-        $component = new $className('news', 'template', array('1', '2', '3'));
-        echo '<pre>'.print_r($component,true).'</pre>';
+        $component = null;
+        if (empty($this->__components[$name])) {
+            include_once($_SERVER['DOCUMENT_ROOT'] . '/app/components/' . $name . '/class.php');
+            $classes = get_declared_classes();
+            foreach ($classes as $className) {
+                if (get_parent_class($className) == 'Component') {
+                    $this->__components[$name] = $className;
+                    break;
+                }
+
+            }
+        }
+        $component = new $this->__components[$name]($name, $tempalte);
+        echo '<pre>' . print_r($component, true) . '</pre>';
+    }
+
+    private function getPropertyKeys()
+    {
+        $keys = array();
+        foreach (array_keys($this->property) as $key)
+            $keys[] = $this->getMacros($key);
+        return $keys;
     }
 
     public function restartBuffer()
@@ -63,7 +81,7 @@ final class Application
 
     public function setPageProperty($id, $value)
     {
-        $this->property[$this->getMacros($id)] = $value;
+        $this->property[$id] = $value;
     }
 
     public function getPageProperty($id)
@@ -121,14 +139,15 @@ final class Application
         $this->includeFile($this->getTemplatePath() . "/footer.php");
         $this->handler('onEpilog');
         $content = ob_get_contents();
-        $content = str_replace(array_keys($this->property), $this->property, $content);
+        $content = str_replace($this->getPropertyKeys(), $this->property, $content);
         ob_clean();
         echo $content;
         ob_end_flush();
     }
 }
 
-class Component
+
+abstract class Component
 {
     private $name = "";
     private $template = "";
@@ -141,10 +160,14 @@ class Component
         $this->params = $params;
     }
 
-    public function includeTemplate()
+//    public function __construct(){}
+
+    public final function includeTemplate()
     {
         $path = $_SERVER['DOCUMENT_ROOT'] . '/app/components/' . $this->name . '/' . $this->template . '/template.php';
         if (file_exists($path))
             include_once($path);
     }
+
+    public abstract function executeComponent();
 }

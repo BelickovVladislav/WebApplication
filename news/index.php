@@ -10,6 +10,6 @@ echo "<h1>";
 $app->showProperty("h1");
 echo "</h1>";
 $app->showFooter();
-$app->includeComponent();
+$app->includeComponent('News.List','news');
 //echo '<pre>'.print_r(spl_classes(),true).'</pre>';
 ?>
