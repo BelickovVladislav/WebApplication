@@ -15,6 +15,7 @@ class NewsList extends Component
         $this->includeTemplate();
     }
 
+
     protected function getResult($pageNumber)
     {
         $array = array();
