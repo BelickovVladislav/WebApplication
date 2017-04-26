@@ -51,18 +51,20 @@ final class Application
     public function includeComponent($name, $tempalte, $params = array())
     {
         if (empty($this->__components[$name])) {
+            $firstCount = count(get_declared_classes());
             include_once($_SERVER['DOCUMENT_ROOT'] . '/app/components/' . $name . '/class.php');
             $classes = get_declared_classes();
-            foreach ($classes as $className) {
-                if (get_parent_class($className) == 'Component') {
-                    $this->__components[$name] = $className;
+            for ($i = $firstCount - 1; $i < count($classes); $i++) {
+                if (is_subclass_of($classes[$i], 'Component')) {
+                    $this->__components[$name] = $classes[$i];
                     break;
                 }
 
             }
         }
         $component = new $this->__components[$name]($name, $tempalte, $params);
-        echo '<pre>' . print_r($component, true) . '</pre>';
+        $component->executeComponent();
+//        echo '<pre>' . print_r($this->__components, true) . '</pre>';
     }
 
     private function getPropertyKeys()
@@ -150,7 +152,8 @@ abstract class Component
 {
     private $name = "";
     private $template = "";
-    private $params = array();
+    protected $params = array();
+    protected $arrResult = array();
 
     public function __construct($name, $template, $params = array())
     {
@@ -159,13 +162,36 @@ abstract class Component
         $this->params = $params;
     }
 
-//    public function __construct(){}
+    protected function prepareParams()
+    {
+        if (empty($this->params['count']))
+            $this->params['count'] = 3;
+        if (empty($this->params['show_pic']))
+            $this->params['show_pic'] = 'Y';
+        if (empty($this->params['data']))
+            $this->params['data'] = 'xml.xml';
+    }
+
+    protected function getPageNumber()
+    {
+        $page = 1;
+        if (isset($_GET['PAGE']) && /*is_int($_GET['PAGE']) &&*/ (int)$_GET['PAGE'] > 0)
+            $page = (int)($_GET['PAGE']);
+        return $page;
+    }
+
+
 
     public final function includeTemplate()
     {
         $path = $_SERVER['DOCUMENT_ROOT'] . '/app/components/' . $this->name . '/' . $this->template . '/template.php';
         if (file_exists($path))
             include_once($path);
+        /*
+         * Добавить вывод по шаблону
+         */
+        echo '<pre>' . print_r($this->params, true) . '</pre>';
+        echo '<pre>' . print_r($this->arrResult, true) . '</pre>';
     }
 
     public abstract function executeComponent();
