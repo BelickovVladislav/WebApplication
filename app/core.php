@@ -50,7 +50,6 @@ final class Application
 
     public function includeComponent($name, $tempalte, $params = array())
     {
-        $component = null;
         if (empty($this->__components[$name])) {
             include_once($_SERVER['DOCUMENT_ROOT'] . '/app/components/' . $name . '/class.php');
             $classes = get_declared_classes();
@@ -62,7 +61,7 @@ final class Application
 
             }
         }
-        $component = new $this->__components[$name]($name, $tempalte);
+        $component = new $this->__components[$name]($name, $tempalte, $params);
         echo '<pre>' . print_r($component, true) . '</pre>';
     }
 
