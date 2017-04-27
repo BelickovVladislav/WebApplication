@@ -14,13 +14,15 @@ class NewsList extends Component
         $this->prepareParams();
         $this->arrResult = $this->getResult($this->getPageNumber(), $countElements);
         $this->includeTemplate();
+        echo "<div class = 'pagination'>";
         for ($i = 0; $i < (int)$countElements / $this->params['count']; $i++) {
-            if ($this->getPageNumber() != $i+1) {
-                ?><a href="?PAGE=<?= $i + 1 ?>"><?= $i + 1 ?></a> <?php
+            if ($this->getPageNumber() != $i + 1) {
+                ?><a href="/news/page-<?= $i + 1 ?>/" class='pagination'><?= $i + 1 ?></a> <?php
             } else {
-                echo ($i+1 ). " ";
+                ?><a class='active'><?= $i + 1 ?></a> <?php
             }
         }
+        echo "</div>";
     }
 
 
