@@ -10,18 +10,27 @@ class NewsList extends Component
 
     public function executeComponent()
     {
+        $countElements = 0;
         $this->prepareParams();
-        $this->arrResult = $this->getResult($this->getPageNumber());
+        $this->arrResult = $this->getResult($this->getPageNumber(), $countElements);
         $this->includeTemplate();
+        for ($i = 0; $i < (int)$countElements / $this->params['count']; $i++) {
+            if ($this->getPageNumber() != $i+1) {
+                ?><a href="?PAGE=<?= $i + 1 ?>"><?= $i + 1 ?></a> <?php
+            } else {
+                echo ($i+1 ). " ";
+            }
+        }
     }
 
 
-    protected function getResult($pageNumber)
+    protected function getResult($pageNumber, &$countItems = 0)
     {
         $array = array();
         if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/app/data/' . $this->params['data'])) {
             $xmlString = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/app/data/' . $this->params['data']);
             $xml = new SimpleXMLElement($xmlString);
+            $countItems = count($xml->item);
             $i = 0;
             foreach ($xml->item as $item) {
                 $array[$i]['title'] = $item->title->__toString();

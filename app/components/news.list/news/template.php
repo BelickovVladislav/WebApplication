@@ -15,7 +15,7 @@ function showNews($items, $params)
             ?><img src='/app/data<?= $item['picture'] ?>'>
             <?php
         }
-        ?> <br><a class="more" href="<?= $item['link'] ?>">Подробнее</a>
+        ?> <br><a class="more" href="<?= $item['link'] ?>" target = '_blank'>Подробнее</a>
         </div>
         <?php
     }
