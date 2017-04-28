@@ -14,26 +14,31 @@ class NewsList extends Component
         $this->prepareParams();
         $this->arrResult = $this->getResult($this->getPageNumber(), $countElements);
         $this->includeTemplate();
+        $this->showPogination($countElements);
+    }
+
+    private function showPogination($countElements)
+    {
         echo "<div class = 'pagination'>";
         $max = (int)$countElements / $this->params['count'];
-
-        echo "<a href=\"/news/page-1/\" ".($this->getPageNumber()==1 ?" class = 'active'":"").">1</a>";
-        if ($this->getPageNumber() > (int)$max / 2) {
-            echo "<a href=\"/news/page-1" . (int)(((int)$max / 2 - 1) / 2) . "/\" >...</a>";;
+        if ($this->getPageNumber() != 1)
+            echo "<a href=\"/news/page-1/\"><<</a>";
+        if ($this->getPageNumber() > (int)($max / 2) && (int)($this->getPageNumber() / 2) != 1) {
+            echo "<a href=\"/news/page-" . ((int)($max / 4)) . "/\" >...</a>";
         }
-        for ($i = $this->getPageNumber() - 2; $i < $this->getPageNumber() + 1 && $i < $max - 1; $i++) {
-            if ($i > 0)
+        for ($i = $this->getPageNumber() - 2; $i < $this->getPageNumber() + 1 && $i < $max; $i++) {
+            if ($i >= 0)
                 if ($this->getPageNumber() != $i + 1) {
                     ?><a href="/news/page-<?= $i + 1 ?>/" ><?= $i + 1 ?></a> <?php
                 } else {
                     ?><a class='active'><?= $i + 1 ?></a> <?php
                 }
         }
-        if ($this->getPageNumber() < (int)$max / 2) {
-
-            echo "<a href=\"/news/page-" . (int)(((int)$max+$this->getPageNumber()) / 2) . "/\" >...</a>";
+        if ($this->getPageNumber() <= (int)($max / 2)) {
+            echo "<a href=\"/news/page-" . (round(($max + $this->getPageNumber()) / 2)) . "/\" >...</a>";
         }
-        echo "<a href=\"/news/page-" . $max . "/\"".($this->getPageNumber()==$max?" class = 'active'":"")." >" . $max . "</a>";
+        if ($this->getPageNumber() != $max)
+            echo "<a href=\"/news/page-" . $max . "/\" > >></a>";
         echo "</div>";
     }
 
